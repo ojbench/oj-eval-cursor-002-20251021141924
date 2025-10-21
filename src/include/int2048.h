@@ -19,7 +19,25 @@
 
 namespace sjtu {
 class int2048 {
-  // todo
+private:
+  // Internal base representation: little-endian limbs in base 1e9
+  static const uint32_t BASE = 1000000000u;
+  static const uint32_t BASE_DIGS = 9u;
+  std::vector<uint32_t> limbs; // least significant block first
+  bool negative = false;       // false for >= 0, true for < 0
+
+  // Helpers
+  void trim();
+  static int compareAbs(const int2048 &a, const int2048 &b);
+  static int compareSigned(const int2048 &a, const int2048 &b);
+  static void addAbs(int2048 &a, const int2048 &b);
+  static void subAbs(int2048 &a, const int2048 &b); // requires |a| >= |b|
+
+  static int2048 mulAbs(const int2048 &a, const int2048 &b);
+  static int2048 mulSmall(const int2048 &a, uint32_t m);
+  static void addMulSmall(int2048 &acc, const int2048 &a, uint32_t m, size_t offset);
+  static int2048 divModAbs(const int2048 &a, const int2048 &b, int2048 &remainder);
+
 public:
   // 构造函数
   int2048();
