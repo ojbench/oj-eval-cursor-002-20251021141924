@@ -58,13 +58,11 @@ public:
 
   // 加上一个大整数
   int2048 &add(const int2048 &);
-  // 返回两个大整数之和
-  friend int2048 add(int2048, const int2048 &);
+  // 返回两个大整数之和（由全局函数在 code.cpp 中提供）
 
   // 减去一个大整数
   int2048 &minus(const int2048 &);
-  // 返回两个大整数之差
-  friend int2048 minus(int2048, const int2048 &);
+  // 返回两个大整数之差（由全局函数在 code.cpp 中提供）
 
   // ===================================
   // Integer2

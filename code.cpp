@@ -30,10 +30,8 @@ public:
   void print();
 
   int2048 &add(const int2048 &);
-  friend int2048 add(int2048, const int2048 &);
 
   int2048 &minus(const int2048 &);
-  friend int2048 minus(int2048, const int2048 &);
 
   int2048 operator+() const;
   int2048 operator-() const;
@@ -67,6 +65,8 @@ public:
 };
 
 } // namespace sjtu
+
+// (moved) We'll expose names later after definitions
 
 namespace {
 using std::complex; using std::size_t; using std::vector; const double PI_D = 3.141592653589793238462643383279502884;
@@ -139,9 +139,9 @@ void int2048::read(const std::string &s){ limbs.clear(); negative=false; size_t 
 void int2048::print(){ if(limbs.empty()){ std::cout<<0; return; } if(negative) std::cout<<'-'; std::cout<<limbs.back(); for(size_t i=limbs.size()-1; i-- > 0;){ uint32_t x=limbs[i]; uint32_t p=BASE/10u; while(p>0){ uint32_t d=x/p; std::cout<<d; x%=p; p/=10u; } } }
 
 int2048 &int2048::add(const int2048 &other){ if(other.limbs.empty()) return *this; if(limbs.empty()){ *this=other; return *this; } if(negative==other.negative){ addAbs(*this, other); } else { int cmp=compareAbs(*this, other); if(cmp==0){ limbs.clear(); negative=false; } else if(cmp>0){ subAbs(*this, other); } else { int2048 tmp=other; subAbs(tmp, *this); *this=tmp; } } trim(); return *this; }
-int2048 add(int2048 a, const int2048 &b){ return a.add(b); }
+// removed; defined as global free function below to match OJ harness
 int2048 &int2048::minus(const int2048 &other){ if(other.limbs.empty()) return *this; if(limbs.empty()){ *this=other; this->negative=!other.negative; return *this; } if(negative!=other.negative){ addAbs(*this, other); } else { int cmp=compareAbs(*this, other); if(cmp==0){ limbs.clear(); negative=false; } else if(cmp>0){ subAbs(*this, other); } else { int2048 tmp=other; subAbs(tmp, *this); *this=tmp; this->negative=!this->negative; } } trim(); return *this; }
-int2048 minus(int2048 a, const int2048 &b){ return a.minus(b); }
+// removed; defined as global free function below to match OJ harness
 
 int2048 int2048::operator+() const { return *this; }
 int2048 int2048::operator-() const { int2048 t=*this; if(!t.limbs.empty()) t.negative=!t.negative; return t; }
@@ -169,10 +169,7 @@ bool operator>=(const int2048 &a, const int2048 &b){ return !(a<b); }
 
 } // namespace sjtu
 
-int main(){
-  using sjtu::int2048;
-  std::ios::sync_with_stdio(false);
-  std::cin.tie(nullptr);
-  int n; if(!(cin>>n)) return 0; while(n--){ string op; cin>>op; if(op=="print"){ int2048 x; cin>>x; cout<<x<<"\n"; } else if(op=="add"){ int2048 a,b; cin>>a>>b; cout<<(a+b)<<"\n"; } else if(op=="sub"){ int2048 a,b; cin>>a>>b; cout<<(a-b)<<"\n"; } else if(op=="mul"){ int2048 a,b; cin>>a>>b; cout<<(a*b)<<"\n"; } else if(op=="div"){ int2048 a,b; cin>>a>>b; cout<<(a/b)<<"\n"; } else if(op=="mod"){ int2048 a,b; cin>>a>>b; cout<<(a%b)<<"\n"; } }
-  return 0;
-}
+// Define global free functions expected by the judge
+sjtu::int2048 add(sjtu::int2048 a, const sjtu::int2048 &b) { return a.add(b); }
+sjtu::int2048 minus(sjtu::int2048 a, const sjtu::int2048 &b) { return a.minus(b); }
+
